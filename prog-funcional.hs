@@ -98,6 +98,8 @@ media lista = somatorio lista / fromIntegral (contaElementos lista)
 -- 29. seleciona: recebe uma lista qualquer e uma lista de posições, retorna uma lista com os elementos da primeira que estavam nas posições indicadas 
 
 
+
+
 -- 32. primo: verifica se um número é primo ou não 
 primo :: Int -> Bool
 primo n
@@ -112,6 +114,10 @@ primo n
 
 
 -- 33. soma_digitos: recebe um número natural e retorna a soma de seus dígitos 
+soma_digitos :: Int -> Int
+soma_digitos n
+    | n < 10    = n
+    | otherwise = n `mod` 10 + soma_digitos (n / 10)
 
 
 -- 35. compactar: recebe uma lista de números e transforma todas as repetições em sub-listas de dois elementos: sendo o primeiro elemento o número de repetições encontradas e o segundo elemento é o número que repete na lista original. Os números que não repetem na lista original não devem ser alterados. 
