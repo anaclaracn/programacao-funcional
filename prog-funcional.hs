@@ -44,7 +44,11 @@ interseccao (c:r) lista
 
 
 -- 17. insere_ordenado: recebe uma lista de números em ordem crescente e um número qualquer, retorna uma lista de números em ordem crescente com os elementos da lista inicial mais o número passado. 
-
+insere_ordenado :: (Real t) => [t] -> t -> [t]
+insere_ordenado [] n = [n]
+insere_ordenado (c:r) n
+    | n <= c    = n : c : r
+    | otherwise = c : insere_ordenado r n
 
 -- 20. mediana: recebe uma lista de números e retorna a mediana deles
 mediana :: (Ord t, RealFrac t) => [t] -> t
