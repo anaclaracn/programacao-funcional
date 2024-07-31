@@ -1,5 +1,5 @@
 -- Ana Clara Carvalho Nascimento   -   202310179
--- Isadora Melo Gomes              -   202310543
+-- Isadora Gomes Melo Cunha              -   202310543
 -- Grupo 2
 
 -- 2. maiores-que: recebe um número e uma lista de números, retorna uma lista com os números
