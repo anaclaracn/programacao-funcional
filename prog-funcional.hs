@@ -76,6 +76,14 @@ mediana lista
 
 
 -- 23. rodar_direita: recebe um número natural, uma lista e retorna uma nova lista onde a posição dos elementos mudou como se eles tivessem sido "rodados" 
+rodar_direita :: Int -> [t] -> [t]
+rodar_direita _ [] = []
+rodar_direita 0 lista = lista
+rodar_direita n lista = rodar_direita (n-1) (ultimoElemento lista : remover_ultimo lista)
+    where
+        ultimoElemento :: [t] -> t
+        ultimoElemento [x] = x
+        ultimoElemento (_:r) = ultimoElemento r
 
 
 -- 26. media: Recebe uma lista de números e retorna a média aritmética deles
