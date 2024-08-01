@@ -3,6 +3,7 @@
 -- Grupo 2
 
 -- 2. maiores-que: recebe um número e uma lista de números, retorna uma lista com os números
+
 maiores_que :: Ord t => t -> [t] -> [t]
 maiores_que _ [] = []
 maiores_que n (c:r)
@@ -76,14 +77,21 @@ mediana lista
 
 
 -- 23. rodar_direita: recebe um número natural, uma lista e retorna uma nova lista onde a posição dos elementos mudou como se eles tivessem sido "rodados" 
-rodar_direita :: Int -> [t] -> [t]
+rodar_direita :: Int -> [a] -> [a]
 rodar_direita _ [] = []
 rodar_direita 0 lista = lista
-rodar_direita n lista = rodar_direita (n-1) (ultimoElemento lista : remover_ultimo lista)
-    where
-        ultimoElemento :: [t] -> t
-        ultimoElemento [x] = x
-        ultimoElemento (_:r) = ultimoElemento r
+rodar_direita n lista = rodar_direita (n - 1) (ultimo : remover_ultimo lista)
+  where
+    pegarUltimo :: [a] -> a
+    pegarUltimo [c] = c
+    pegarUltimo (_:r) = pegarUltimo r
+
+    remover_ultimo :: [a] -> [a]
+    remover_ultimo [] = []
+    remover_ultimo [_] = []
+    remover_ultimo (c:r) = c : remover_ultimo r
+
+    ultimo = pegarUltimo lista
 
 
 -- 26. media: Recebe uma lista de números e retorna a média aritmética deles
@@ -95,10 +103,14 @@ media lista = somatorio lista / fromIntegral (contaElementos lista)
         contaElementos (c:r) = 1 + contaElementos r
 
 
--- 29. seleciona: recebe uma lista qualquer e uma lista de posições, retorna uma lista com os elementos da primeira que estavam nas posições indicadas 
-
-
-
+-- 29. seleciona: recebe uma lista qualquer e uma lista de posições, retorna uma lista com os elementos da primeira que estavam nas posições indicadas
+seleciona :: (Integral p) => [a] -> [p] -> [a]
+seleciona _ [] = []
+seleciona lista (c:r) = buscaAux lista c : seleciona lista r
+  where
+    buscaAux :: (Integral p) => [a] -> p -> a
+    buscaAux (c:r) 1 = c
+    buscaAux (_:r) p = buscaAux r (p - 1)
 
 -- 32. primo: verifica se um número é primo ou não 
 primo :: Int -> Bool
@@ -117,7 +129,7 @@ primo n
 soma_digitos :: Int -> Int
 soma_digitos n
     | n < 10    = n
-    | otherwise = n `mod` 10 + soma_digitos (n / 10)
+    | otherwise = n `mod` 10 + soma_digitos (n `div` 10)
 
 
 -- 35. compactar: recebe uma lista de números e transforma todas as repetições em sub-listas de dois elementos: sendo o primeiro elemento o número de repetições encontradas e o segundo elemento é o número que repete na lista original. Os números que não repetem na lista original não devem ser alterados. 
