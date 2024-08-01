@@ -1,9 +1,8 @@
 -- Ana Clara Carvalho Nascimento   -   202310179
--- Isadora Gomes Melo Cunha              -   202310543
+-- Isadora Melo Gomes              -   202310543
 -- Grupo 2
 
 -- 2. maiores-que: recebe um número e uma lista de números, retorna uma lista com os números
-
 maiores_que :: Ord t => t -> [t] -> [t]
 maiores_que _ [] = []
 maiores_que n (c:r)
@@ -30,12 +29,14 @@ somatorio :: (Real t) => [t] -> t
 somatorio [] = 0
 somatorio (c:r) = c + somatorio r
 
+
 -- 14. interseccao: recebe duas listas sem elementos repetidos e retorna uma lista com os elementos que são comuns às duas
 interseccao :: Eq t => [t] -> [t] -> [t]
 interseccao [] _ = []
 interseccao (c:r) lista
     | procuraElemento c lista = c : interseccao r lista
     | otherwise               = interseccao r lista
+
     where
         procuraElemento :: Eq t => t -> [t] -> Bool
         procuraElemento _ [] = False
@@ -51,14 +52,15 @@ insere_ordenado (c:r) n
     | n <= c    = n : c : r
     | otherwise = c : insere_ordenado r n
 
+
 -- 20. mediana: recebe uma lista de números e retorna a mediana deles
-mediana :: (Ord t, RealFrac t) => [t] -> t
+mediana :: (RealFrac t) => [t] -> t
 mediana lista
     | impar n   = listaOrdenada !! indiceCentral
     | otherwise = (listaOrdenada !! (indiceCentral - 1) + listaOrdenada !! indiceCentral) / 2
 
     where
-        listaOrdenada = ordena lista
+        listaOrdenada = ordenar lista
         n = contaElementos lista
         indiceCentral = n `div` 2
 
@@ -69,11 +71,15 @@ mediana lista
         impar :: Int -> Bool
         impar x = x `mod` 2 /= 0
 
-        ordena :: Ord t => [t] -> [t]
-        ordena [] = []
-        ordena (c:r) = ordena [x | x <- r, x <= c]
-                        ++ [c]
-                        ++ ordena [x | x <- r, x > c]
+        ordenar :: Ord t => [t] -> [t]
+        ordenar [] = []
+        ordenar (c:r) = inserirOrdenado c (ordenar r)
+            where
+                inserirOrdenado :: Ord t => t -> [t] -> [t]
+                inserirOrdenado n [] = [n]
+                inserirOrdenado n (c:r)
+                    | n <= c    = n : c : r
+                    | otherwise = c : inserirOrdenado n r
 
 
 -- 23. rodar_direita: recebe um número natural, uma lista e retorna uma nova lista onde a posição dos elementos mudou como se eles tivessem sido "rodados" 
@@ -81,21 +87,21 @@ rodar_direita :: Int -> [a] -> [a]
 rodar_direita _ [] = []
 rodar_direita 0 lista = lista
 rodar_direita n lista = rodar_direita (n - 1) (ultimo : remover_ultimo lista)
-  where
-    pegarUltimo :: [a] -> a
-    pegarUltimo [c] = c
-    pegarUltimo (_:r) = pegarUltimo r
+    where
+        pegarUltimo :: [a] -> a
+        pegarUltimo [c] = c
+        pegarUltimo (_:r) = pegarUltimo r
 
-    remover_ultimo :: [a] -> [a]
-    remover_ultimo [] = []
-    remover_ultimo [_] = []
-    remover_ultimo (c:r) = c : remover_ultimo r
+        remover_ultimo :: [a] -> [a]
+        remover_ultimo [] = []
+        remover_ultimo [_] = []
+        remover_ultimo (c:r) = c : remover_ultimo r
 
-    ultimo = pegarUltimo lista
+        ultimo = pegarUltimo lista
 
 
 -- 26. media: Recebe uma lista de números e retorna a média aritmética deles
-media :: (Real t, RealFrac t) => [t] -> t
+media :: (RealFrac t) => [t] -> t
 media lista = somatorio lista / fromIntegral (contaElementos lista)
     where
         contaElementos :: [t] -> Int
@@ -103,26 +109,26 @@ media lista = somatorio lista / fromIntegral (contaElementos lista)
         contaElementos (c:r) = 1 + contaElementos r
 
 
--- 29. seleciona: recebe uma lista qualquer e uma lista de posições, retorna uma lista com os elementos da primeira que estavam nas posições indicadas
+-- 29. seleciona: recebe uma lista qualquer e uma lista de posições, retorna uma lista com os elementos da primeira que estavam nas posições indicadas 
 seleciona :: (Integral p) => [a] -> [p] -> [a]
 seleciona _ [] = []
 seleciona lista (c:r) = buscaAux lista c : seleciona lista r
-  where
-    buscaAux :: (Integral p) => [a] -> p -> a
-    buscaAux (c:r) 1 = c
-    buscaAux (_:r) p = buscaAux r (p - 1)
+    where
+        buscaAux :: (Integral p) => [a] -> p -> a
+        buscaAux (c:r) 1 = c
+        buscaAux (_:r) p = buscaAux r (p - 1)
+
 
 -- 32. primo: verifica se um número é primo ou não 
 primo :: Int -> Bool
-primo n
-    | n <= 1    = False
-    | otherwise = not (dividePor n 2)
+primo n = procuraDivisor n 2
     where
-        dividePor :: Int -> Int -> Bool
-        dividePor n divisor
-            | divisor * divisor > n = False
-            | n `mod` divisor == 0  = True
-            | otherwise               = dividePor n (divisor + 1)
+        procuraDivisor :: Int -> Int -> Bool
+        procuraDivisor n div
+            | n <= 1                = False
+            | n < div * div         = True
+            | n `mod` div == 0      = False
+            | otherwise             = procuraDivisor n (div + 1)
 
 
 -- 33. soma_digitos: recebe um número natural e retorna a soma de seus dígitos 
@@ -130,20 +136,29 @@ soma_digitos :: Int -> Int
 soma_digitos n
     | n < 10    = n
     | otherwise = n `mod` 10 + soma_digitos (n `div` 10)
-
+    
 
 -- 35. compactar: recebe uma lista de números e transforma todas as repetições em sub-listas de dois elementos: sendo o primeiro elemento o número de repetições encontradas e o segundo elemento é o número que repete na lista original. Os números que não repetem na lista original não devem ser alterados
-compactar :: (Eq t, Num t) => [t] -> [[t]]
+compactar :: (Integral t) => [t] -> [[t]]
 compactar [] = []
-compactar (c:r) = compactarAux 1 c r []
-  where
-    compactarAux :: (Eq t, Num t) => Int -> t -> [t] -> [[t]] -> [[t]]
-    compactarAux n x [] acc = addToResult n x acc
-    compactarAux n x (c:r) acc
-      | x == c    = compactarAux (n + 1) x r acc
-      | otherwise = compactarAux 1 c r (addToResult n x acc)
+compactar (c:r)
+    | rept == 1  = [c] : compactar rest
+    | otherwise  = [rept, c] : compactar rest
 
-    addToResult :: (Num t) => Int -> t -> [[t]] -> [[t]]
-    addToResult n x acc
-      | n == 1    = acc ++ [[x]]
-      | otherwise = acc ++ [[fromIntegral n, x]]
+    where
+        rept = contar c (c:r)
+        rest = remover c (c:r) rept
+
+        contar :: (Integral t) => t -> [t] -> t
+        contar n lista = contarRep n lista 0
+            where
+                contarRep _ [] quant = quant
+                contarRep n (c:r) quant
+                    | n == c    = contarRep n r (quant + 1)
+                    | otherwise = quant
+
+        remover :: (Integral i) => i -> [i] -> i -> [i]
+        remover _ [] _ = []
+        remover n (c:r) count
+            | count > 0 && c == n = remover n r (count - 1)
+            | otherwise           = c : remover n r count
