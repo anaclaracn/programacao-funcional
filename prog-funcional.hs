@@ -35,7 +35,7 @@ interseccao :: Eq t => [t] -> [t] -> [t]
 interseccao [] _ = []
 interseccao (c:r) lista
     | procuraElemento c lista = c : interseccao r lista
-    | otherwise                = interseccao r lista
+    | otherwise               = interseccao r lista
     where
         procuraElemento :: Eq t => t -> [t] -> Bool
         procuraElemento _ [] = False
@@ -117,12 +117,12 @@ primo :: Int -> Bool
 primo n
     | n <= 1    = False
     | otherwise = not (dividePor n 2)
-  where
-    dividePor :: Int -> Int -> Bool
-    dividePor n divisor
-        | divisor * divisor > n = False
-        | n `mod` divisor == 0  = True
-        | otherwise               = dividePor n (divisor + 1)
+    where
+        dividePor :: Int -> Int -> Bool
+        dividePor n divisor
+            | divisor * divisor > n = False
+            | n `mod` divisor == 0  = True
+            | otherwise               = dividePor n (divisor + 1)
 
 
 -- 33. soma_digitos: recebe um número natural e retorna a soma de seus dígitos 
@@ -132,4 +132,18 @@ soma_digitos n
     | otherwise = n `mod` 10 + soma_digitos (n `div` 10)
 
 
--- 35. compactar: recebe uma lista de números e transforma todas as repetições em sub-listas de dois elementos: sendo o primeiro elemento o número de repetições encontradas e o segundo elemento é o número que repete na lista original. Os números que não repetem na lista original não devem ser alterados. 
+-- 35. compactar: recebe uma lista de números e transforma todas as repetições em sub-listas de dois elementos: sendo o primeiro elemento o número de repetições encontradas e o segundo elemento é o número que repete na lista original. Os números que não repetem na lista original não devem ser alterados
+compactar :: (Eq t, Num t) => [t] -> [[t]]
+compactar [] = []
+compactar (c:r) = compactarAux 1 c r []
+  where
+    compactarAux :: (Eq t, Num t) => Int -> t -> [t] -> [[t]] -> [[t]]
+    compactarAux n x [] acc = addToResult n x acc
+    compactarAux n x (c:r) acc
+      | x == c    = compactarAux (n + 1) x r acc
+      | otherwise = compactarAux 1 c r (addToResult n x acc)
+
+    addToResult :: (Num t) => Int -> t -> [[t]] -> [[t]]
+    addToResult n x acc
+      | n == 1    = acc ++ [[x]]
+      | otherwise = acc ++ [[fromIntegral n, x]]
